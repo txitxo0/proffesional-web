@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="docTitle">Jesús de Luis | CV</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        
+        :root {
+            --color-primary: #222222;
+            --color-secondary: #00AEEF;
+            --color-text: #FFFFFF;
+            --color-card-bg: #ffffff;
+            --color-card-text: #222222;
+            --color-secondary-hover: #0095c7;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--color-primary);
+            color: var(--color-text);
+        }
+
+        .accent-color-text { color: var(--color-secondary); }
+        .page-content { display: none; }
+        .page-content.active { display: block; }
+
+        /* Controls */
+        .color-input { -webkit-appearance: none; -moz-appearance: none; appearance: none; width: 24px; height: 24px; background-color: transparent; border: none; cursor: pointer; }
+        .color-input::-webkit-color-swatch { border-radius: 50%; border: 2px solid #E5E7EB; }
+        .control-btn { transition: background-color 0.2s, color 0.2s; }
+        .control-btn.active { background-color: var(--color-secondary); color: white; }
+        .control-btn.inactive { background-color: rgba(255, 255, 255, 0.1); color: var(--color-text); }
+        .button-container-bg { background-color: rgba(255, 255, 255, 0.1); }
+
+        /* --- New Timeline Design --- */
+        #timeline-container {
+            position: relative;
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+        }
+        /* Main vertical line */
+        #timeline-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 3px;
+            height: calc(100% - 10rem); /* Adjust to stop line before the end */
+            background-color: var(--color-secondary);
+            z-index: 1;
+        }
+        .timeline-row {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            gap: 2rem;
+            position: relative;
+            min-height: 150px;
+            margin-bottom: 1rem;
+        }
+        .timeline-row:last-child { margin-bottom: 0; }
+
+        .timeline-content-wrapper {
+            position: relative;
+            z-index: 2;
+        }
+        .timeline-content-wrapper.left { text-align: right; }
+        .timeline-content-wrapper.right { text-align: left; }
+
+        .timeline-node-circle {
+            grid-column: 2;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #fff;
+            border: 4px solid var(--color-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            z-index: 10;
+            position: relative;
+        }
+        .timeline-node-circle img { width: 100%; height: 100%; object-fit: contain; }
+        .timeline-job-year { font-weight: 700; font-size: 1.25rem; color: var(--color-secondary); margin-bottom: 0.5rem; }
+        .timeline-job-title { font-weight: 700; font-size: 1.1rem; color: var(--color-card-text); }
+        .timeline-job-subtitle { font-size: 0.9rem; color: #666; }
+
+        #profile-photo-row .timeline-node-circle { width: 220px; height: 220px; }
+        #radar-wrapper { width: 100%; max-width: 600px; margin-top: 2rem; }
+
+        /* --- Formal CV (Page 2) Styles --- */
+        #formalPage h2 { font-size: 1.5rem; font-weight: 700; color: var(--color-secondary); border-bottom: 2px solid #ecf0f1; padding-bottom: 0.5rem; margin-top: 2rem; margin-bottom: 1rem; }
+        #formalPage h3 { font-size: 1.1rem; font-weight: 600; margin-top: 1.5rem; }
+        #formalPage .formal-section { margin-bottom: 1rem; }
+        #formalPage .formal-skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
+
+        /* Print Styles */
+        @media print {
+            @page {
+                size: A4 landscape;
+                margin: 0;
+            }
+            body {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            #controls, .no-print { display: none !important; }
+            main { padding-top: 0 !important; }
+            .page-content { display: none !important; }
+            .page-content.active { display: block !important; box-shadow: none !important; }
+
+            #visualPage.active {
+                zoom: 0.60;
+            }
+
+            #visualPage.active .grid {
+                grid-template-columns: repeat(2, 1fr);
+                padding: 0;
+                max-width: 100%;
+            }
+
+            #visualPage.active, #visualPage.active * {
+                color: #000 !important;
+            }
+            #visualPage.active .accent-color-text, #visualPage.active .timeline-job-year {
+                color: var(--color-secondary) !important;
+            }
+
+            #formalPage {
+                margin: 0;
+                padding: 2rem;
+                border-radius: 0;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <nav id="controls" class="no-print fixed top-0 left-0 right-0 bg-black/20 backdrop-blur-sm p-3 shadow-md z-50">
+        <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-4">
+            <h1 class="text-xl font-bold hidden sm:block" data-key="visual.name"></h1>
+            <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
+                <div class="flex items-center gap-x-3 text-sm">
+                    <div>
+                        <label id="color_primary_label" for="color_primary" class="font-medium">BG:</label>
+                        <input type="color" id="color_primary" value="#222222" class="color-input">
+                    </div>
+                    <div>
+                        <label id="color_secondary_label" for="color_secondary" class="font-medium">Accent:</label>
+                        <input type="color" id="color_secondary" value="#00AEEF" class="color-input">
+                    </div>
+                </div>
+                <div class="flex rounded-full p-1 button-container-bg">
+                    <button id="btn-visual" class="page-btn px-3 py-1 rounded-full text-sm font-semibold">Visual</button>
+                    <button id="btn-formal" class="page-btn px-3 py-1 rounded-full text-sm font-semibold">Formal</button>
+                </div>
+                <div class="flex rounded-full p-1 button-container-bg">
+                    <button id="btn-es" class="lang-btn px-3 py-1 rounded-full text-sm font-semibold">ES</button>
+                    <button id="btn-en" class="lang-btn px-3 py-1 rounded-full text-sm font-semibold">EN</button>
+                </div>
+                <button onclick="window.print()" class="print-btn control-btn px-4 py-2 rounded-full text-sm font-semibold" data-key="print_btn_text"></button>
+            </div>
+        </div>
+    </nav>
+    
+    <main class="pt-20">
+        <div id="visualPage" class="page-content">
+            <!-- <h1 class="text-center text-5xl font-extrabold pt-8 pb-12" data-key="visual.name"></h1> -->
+            <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 px-4">
+                <div id="timeline-container"></div>
+                <div id="radar-container" class="lg:pt-16">
+                    <div class="text-center lg:text-left mb-8">
+                        <h1 class="text-5xl font-extrabold">Jesús de Luis</h1>
+                        <h2 class="text-3xl font-semibold accent-color-text mt-2">Platform Engineer</h2>
+                        <div class="mt-4 space-y-2 text-lg">
+                            <p><i class="fas fa-phone-alt mr-2"></i> +34 650366637</p>
+                            <p><i class="fas fa-envelope mr-2"></i> jdeluisserrano@gmail.com</p>
+                            <p><i class="fab fa-linkedin mr-2"></i> <a href="https://linkedin.com/in/jesusdeluis" target="_blank" class="hover:underline">LinkedIn</a></p>
+                        </div>
+                    </div>
+                    <h2 class="text-3xl font-bold text-center mb-4" data-key="skills.title"></h2>
+                    <div id="radar-wrapper"></div>
+                </div>
+            </div>
+        </div>
+        <div id="formalPage" class="page-content max-w-4xl mx-auto my-10 p-10 rounded-lg shadow-2xl">
+            <h1 class="text-4xl font-bold" data-key="visual.name_formal"></h1>
+            <p class="text-lg accent-color-text" data-key="visual.title"></p>
+            <div id="formal-cv-content"></div>
+        </div>
+    </main>
+
+    <script>
+        const content = {
+            es: {
+                docTitle: "Jesús de Luis | CV",
+                print_btn_text: "Imprimir",
+                visual: {
+                    name: "Jesús de Luis CV",
+                    name_formal: "Jesús de Luis",
+                    title: "Platform Engineer",
+                    timeline: [
+                        { type: 'photo', img: './img/LP4.jpeg', logo_scale: 1 },
+                        { type: 'job', side: 'right', year: '2006-2015', title: 'Ingeniero de Telecomunicación', subtitle: 'Universidad Carlos III de Madrid', logo: './img/UC3M.png', logo_scale: 1.05 },
+                        { type: 'job', side: 'left', year: '2015-2016', title: 'IBM', subtitle: 'Desarrollador Full Stack', logo: './img/IBM.png', logo_scale: 0.9},
+                        { type: 'job', side: 'rigth', year: '2016-2018', title: 'Minsait by Indra', subtitle: 'Arquitectura y Preventa', logo: './img/minsait.png', logo_scale: 1.1},
+                        { type: 'job', side: 'left', year: '2018-2019', title: 'Carrefour R&D', subtitle: 'Desarrollador E-commerce', logo: './img/carrefour.png', logo_scale: 0.9, },
+                        { type: 'job', side: 'right', year: '2019-2022', title: 'Visma', subtitle: 'SRE | DevOps Engineer', logo: './img/Visma.png' },
+                        { type: 'job', side: 'left', year: '2022-Presente', title: 'BASF', subtitle: 'SRE | Platform Engineer', logo: './img/basf.png' },
+                    ]
+                },
+                skills: {
+                    title: "Tech Radar",
+                    quadrants: ["Cloud & IaC", "DevSecOps", "Development", "Monitoring"],
+                    rings: ["Core", "Expert", "Familiar"],
+                    data: [
+                        { name: "Terraform", quadrant: 0, ring: 1 }, { name: "ARM", quadrant: 0, ring: 2 }, { name: "Azure", quadrant: 0, ring: 0 }, { name: "Docker", quadrant: 0, ring: 1 }, { name: "Kubernetes", quadrant: 0, ring: 2 },
+                        { name: "ADO", quadrant: 1, ring: 0 }, { name: "GitHub", quadrant: 1, ring: 1 },{ name: "Fortify", quadrant: 1, ring: 1 },{ name: "SonarQube", quadrant: 1, ring: 1 },{ name: "OWASP", quadrant: 1, ring: 2 },
+                        { name: "PowerShell", quadrant: 2, ring: 0 }, { name: "Bash", quadrant: 2, ring: 0 },{ name: "Python", quadrant: 2, ring: 1 },
+                        { name: "Datadog", quadrant: 3, ring: 1 }, { name: "API", quadrant: 3, ring: 0 },{ name: "Grafana", quadrant: 3, ring: 2 },
+                    ]
+                },
+                formal: [
+                    { title: 'Experiencia', items: [
+                        { heading: 'SRE | DevOps Engineer, BASF', text: 'Mentoring a equipos en cultura DevOps y metodologías ágiles. Automatización de infraestructura (IaC) con Azure DevOps, Terraform, Python y Bash.'},
+                        { heading: 'SRE | DevOps Engineer, Visma', text: 'Estandarización de políticas CI/CD, monitoreo y alerting. Mentoría en adopción de Scrum y SAFe.'},
+                    ]},
+                    { title: 'Educación', items: [ { heading: 'Ingeniería de Telecomunicación', text: 'Universidad Carlos III de Madrid, 2006-2015'} ]},
+                    { title: 'Habilidades', type: 'grid', items: [
+                        { heading: 'Cloud & IaC', text: 'Azure, Azure DevOps, Terraform, YAML'},
+                        { heading: 'DevOps & SRE', text: 'CI/CD, Observabilidad (DataDog), Scrum, SAFe'},
+                        { heading: 'Desarrollo', text: 'Python, Bash, Java (Spring Boot), REST'},
+                    ]},
+                ]
+            },
+            en: { /* English content is a copy of Spanish for now */ }
+        };
+        content.en = JSON.parse(JSON.stringify(content.es));
+        content.en.docTitle = "Jesús de Luis | CV";
+        content.en.print_btn_text = "Print";
+        content.en.visual.name = "Jesús de Luis CV";
+        content.en.visual.name_formal = "Jesús de Luis";
+        content.en.visual.title = "Platform Engineer";
+        content.en.visual.timeline = [
+                        { type: 'photo', img: './img/LP4.jpeg', logo_scale: 1 },
+                        { type: 'job', side: 'right', year: '2006-2015', title: 'Telecommunication engineer', subtitle: 'Carlos III University of Madrid', logo: './img/UC3M.png', logo_scale: 1.05 },
+                        { type: 'job', side: 'left', year: '2015-2016', title: 'IBM', subtitle: 'Full Stack developer', logo: './img/IBM.png', logo_scale: 0.9},
+                        { type: 'job', side: 'right', year: '2016-2018', title: 'Minsait by Indra', subtitle: 'Architecture & Pre-sales', logo: './img/minsait.png', logo_scale: 1.1},
+                        { type: 'job', side: 'left', year: '2018-2019', title: 'Carrefour R&D', subtitle: 'E-commerce Developer', logo: './img/carrefour.png', logo_scale: 0.9, },
+                        { type: 'job', side: 'right', year: '2019-2022', title: 'Visma', subtitle: 'SRE | DevOps Engineer', logo: './img/Visma.png' },
+                        { type: 'job', side: 'left', year: '2022-Presente', title: 'BASF', subtitle: 'SRE | Platform Engineer', logo: './img/basf.png' },
+        ];
+        content.en.skills = {
+            title: "Tech Radar",
+            quadrants: ["Cloud & IaC", "DevSecOps", "Development", "Monitoring"],
+            rings: ["Core", "Expert", "Familiar"],
+            data: [
+                { name: "Terraform", quadrant: 0, ring: 1 }, { name: "ARM", quadrant: 0, ring: 2 }, { name: "Azure", quadrant: 0, ring: 0 }, { name: "Docker", quadrant: 0, ring: 1 }, { name: "Kubernetes", quadrant: 0, ring: 2 },
+                { name: "ADO", quadrant: 1, ring: 0 }, { name: "GitHub", quadrant: 1, ring: 1 },{ name: "Fortify", quadrant: 1, ring: 1 },{ name: "SonarQube", quadrant: 1, ring: 1 },{ name: "OWASP", quadrant: 1, ring: 2 },
+                { name: "PowerShell", quadrant: 2, ring: 0 }, { name: "Bash", quadrant: 2, ring: 0 },{ name: "Python", quadrant: 2, ring: 1 },
+                { name: "Datadog", quadrant: 3, ring: 1 }, { name: "API", quadrant: 3, ring: 0 },{ name: "Grafana", quadrant: 3, ring: 2 },
+            ]
+        };
+        content.en.formal = [
+            { title: 'Experience', items: [
+                { heading: 'SRE / Platform Engineer, BASF', text: 'Mentoring teams in DevOps culture and agile methodologies. Automation of infrastructure (IaC) with Azure DevOps, Terraform, Python and Bash.'},
+                { heading: 'SRE / DevOps Engineer, Visma', text: 'Standardization of CI/CD policies, monitoring and alerting. Mentoring in adoption of Scrum and SAFe.'},
+                { heading: 'E-commerce Developer, Carrefour R&D', text: 'Backend developer for Carrefour’s sales web. Development using ATG, Spring Boot, Handlebars. Modernizing legacy systems and leveraging cloud technologies (OpenShift, Docker).'},
+                { heading: 'Architecture & Backend Development, Minsait by Indra', text: 'REST backend development and maintenance. System administration (Linux, Azure). Business development and pre-sales for the Sofia2 platform.'},
+                { heading: 'Intern Programmer, IBM Smarter Analytics', text: 'Web app development on IBM Z systems for Smartcities project. Technologies: Java, JavaScript, HTML, REST, DB2.'},
+            ]},
+            { title: 'Education', items: [ 
+                { heading: 'Telecommunication Engineering', text: 'Universidad Carlos III de Madrid, 2006-2015'},
+                { heading: 'CITIUS Internship', text: 'Universidad Autónoma de Madrid, 2015-2016'},
+                { heading: 'Exchange Student', text: 'Chalmers University of Technology, 2012-2013'},
+            ]},
+            { title: 'Skills', type: 'grid', items: [
+                { heading: 'Cloud & DevOps', text: 'Azure, Azure DevOps, Oracle Cloud, OpenShift, Jenkins, Terraform, Data Dog, ServiceNow, Docker, CI/CD, IaC (YAML)'},
+                { heading: 'Programming & Scripting', text: 'Java (Spring Boot, JPA), JavaScript, Bash, Python, PowerShell, REST APIs'},
+                { heading: 'Databases', text: 'SQL (DB2, SQL Server), NoSQL (MongoDB)'},
+            ]},
+        ];
+        // Further translations would be needed here
+
+        let currentLang = 'es';
+        let currentPage = 'visual';
+
+        function getContrastYIQ(hex){
+            hex = hex.replace("#", "");
+            const r = parseInt(hex.substr(0,2),16), g = parseInt(hex.substr(2,2),16), b = parseInt(hex.substr(4,2),16);
+            const yiq = ((r*299)+(g*587)+(b*114))/1000;
+            return (yiq >= 128) ? '#222222' : '#FFFFFF';
+        }
+
+        function setLanguage(lang) { currentLang = lang; updateUI(); }
+        function setPage(page) { currentPage = page; updateUI(); }
+
+        function simpleHash(str) {
+            let hash = 0;
+            if (str.length === 0) return hash;
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash |= 0; // Convert to 32bit integer
+            }
+            return Math.abs(hash);
+        }
+
+        function setTheme() {
+            const primaryColorInput = document.getElementById('color_primary');
+            const secondaryColorInput = document.getElementById('color_secondary');
+            if (!primaryColorInput || !secondaryColorInput) return;
+            const primary = primaryColorInput.value;
+            const secondary = secondaryColorInput.value;
+            document.documentElement.style.setProperty('--color-primary', primary);
+            document.documentElement.style.setProperty('--color-secondary', secondary);
+            document.documentElement.style.setProperty('--color-text', getContrastYIQ(primary));
+            const s = parseInt(secondary.slice(1), 16);
+            const r = (s >> 16) & 0xff, g = (s >> 8) & 0xff, b = s & 0xff;
+            document.documentElement.style.setProperty('--color-secondary-hover', `rgb(${r-20}, ${g-20}, ${b-20})`);
+        }
+
+        function renderTechRadar(skillsData, containerId) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            container.innerHTML = ''; // Clear for re-renders on language change
+            
+            const size = 700;
+            const center = size / 2;
+            const rings = skillsData.rings;
+            const quadrants = skillsData.quadrants;
+            const ringRadius = (center * 0.85) / rings.length;
+            const quadrantColors = ["#3B82F6", "#10B981", "#F59E0B", "#EF4444"];
+
+            let svg = `<svg viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%;">`;
+            svg += `<line x1="${center}" y1="0" x2="${center}" y2="${size}" stroke="#E5E7EB" stroke-width="1"/>`;
+            svg += `<line x1="0" y1="${center}" x2="${size}" y2="${center}" stroke="#E5E7EB" stroke-width="1"/>`;
+            rings.forEach((ring, i) => {
+                const r = ringRadius * (i + 1);
+                svg += `<circle cx="${center}" cy="${center}" r="${r}" fill="none" stroke="#E5E7EB" stroke-width="1"/>`;
+                svg += `<text x="${center + 5}" y="${center - r + 13}" class="tech-radar-ring-label">${ring}</text>`;
+            });
+
+            svg += `<text x="${center + 10}" y="20" class="tech-radar-quadrant-label">${quadrants[0]}</text>`;
+            svg += `<text x="${center + 10}" y="${size - 10}" class="tech-radar-quadrant-label">${quadrants[1]}</text>`;
+            svg += `<text x="${center - 10}" y="${size - 10}" text-anchor="end" class="tech-radar-quadrant-label">${quadrants[2]}</text>`;
+            svg += `<text x="${center - 10}" y="20" text-anchor="end" class="tech-radar-quadrant-label">${quadrants[3]}</text>`;
+
+            // Group skills by quadrant and ring for even distribution
+            const groupedSkills = {};
+            skillsData.data.forEach(skill => {
+                const key = `${skill.quadrant}-${skill.ring}`;
+                if (!groupedSkills[key]) groupedSkills[key] = [];
+                groupedSkills[key].push(skill);
+            });
+
+            skillsData.data.forEach(skill => {
+                const quadrant = skill.quadrant;
+                const ring = skill.ring;
+                const key = `${quadrant}-${ring}`;
+                const group = groupedSkills[key];
+                const indexInGroup = group.indexOf(skill);
+                const totalInGroup = group.length;
+                
+                // Place skills on the middle of their ring circle
+                const radius = (ring + 0.5) * ringRadius;
+                
+                // Spread evenly across the quadrant based on position in group
+                const angleRange = 70; // Use 70° out of 90° quadrant
+                const angleStart = (quadrant * 90) + 10;
+                const angleDeg = angleStart + (angleRange / (totalInGroup + 1)) * (indexInGroup + 1);
+                const angleRad = angleDeg * (Math.PI / 180);
+                
+                const x = center + radius * Math.cos(angleRad);
+                const y = center + radius * Math.sin(angleRad);
+                const textAnchor = (quadrant === 2 || quadrant === 3) ? "end" : "start";
+                const textOffset = (quadrant === 2 || quadrant === 3) ? -16 : 16;
+
+                svg += `<g transform="translate(${x}, ${y})">
+                    <circle cx="0" cy="0" r="9" fill="${quadrantColors[quadrant]}" stroke="var(--color-card-bg)" class="tech-radar-skill-dot"/>
+                    <text x="${textOffset}" y="6" text-anchor="${textAnchor}" class="tech-radar-skill-label">${skill.name}</text>
+                </g>`;
+            });
+
+            svg += `</svg>`;
+            container.innerHTML = svg;
+        }
+
+        function updateUI() {
+            const langData = content[currentLang];
+            
+            document.querySelectorAll('[data-key]').forEach(el => {
+                const value = el.getAttribute('data-key').split('.').reduce((o, i) => o && o[i], langData);
+                if (value !== undefined) el.textContent = value;
+            });
+
+            const timelineContainer = document.getElementById('timeline-container');
+            if(timelineContainer) {
+                let timelineHTML = '';
+                langData.visual.timeline.forEach(item => {
+                    if (item.type === 'photo') {
+                        const logoScale = item.logo_scale || 1.0;
+                        const imgStyle = `transform: scale(${logoScale}); width: 100%; height: 100%; object-fit: cover;`;
+                        timelineHTML += `<div id="profile-photo-row" class="timeline-row"><div class="timeline-content-wrapper left"></div><div class="timeline-node-circle"><img src="${item.img}" alt="Profile photo" style="${imgStyle}"></div><div class="timeline-content-wrapper right"></div></div>`;
+                    } else if (item.type === 'job') {
+                        const jobContentHTML = `<div class="timeline-job-year">${item.year}</div><div class="timeline-job-title">${item.title}</div><div class="timeline-job-subtitle">${item.subtitle}</div>`;
+                        const logoScale = item.logo_scale || 1.0;
+                        const imgStyle = `transform: scale(${logoScale}); width: 100%; height: 100%; object-fit: contain;`;
+                        const nodeHTML = `<div class="timeline-node-circle"><img src="${item.logo}" alt="${item.title} logo" style="${imgStyle}"></div>`;
+
+                        if (item.side === 'left') {
+                            timelineHTML += `<div class="timeline-row"><div class="timeline-content-wrapper left">${jobContentHTML}</div>${nodeHTML}<div class="timeline-content-wrapper right"></div></div>`;
+                        } else {
+                            timelineHTML += `<div class="timeline-row"><div class="timeline-content-wrapper left"></div>${nodeHTML}<div class="timeline-content-wrapper right">${jobContentHTML}</div></div>`;
+                        }
+                    } else if (item.type === 'radar') {
+                        // This is now handled separately
+                    }
+                });
+                timelineContainer.innerHTML = timelineHTML;
+                renderTechRadar(langData.skills, 'radar-wrapper');
+            }
+
+            const formalContainer = document.getElementById('formal-cv-content');
+            if(formalContainer) {
+                let formalHTML = '';
+                langData.formal.forEach(section => {
+                    formalHTML += `<h2>${section.title}</h2>`;
+                    if (section.type === 'grid') {
+                        formalHTML += `<div class="formal-skills-grid">`;
+                        section.items.forEach(item => { formalHTML += `<div><h3>${item.heading}</h3><p>${item.text}</p></div>`; });
+                        formalHTML += `</div>`;
+                    } else {
+                        section.items.forEach(item => { formalHTML += `<div class="formal-section"><h3>${item.heading}</h3><p>${item.text}</p></div>`; });
+                    }
+                });
+                formalContainer.innerHTML = formalHTML;
+            }
+
+            document.querySelectorAll('.lang-btn, .page-btn').forEach(btn => {
+                const isLang = btn.classList.contains('lang-btn');
+                const id = isLang ? `btn-${currentLang}` : `btn-${currentPage}`;
+                const isActive = btn.classList.toggle('active', btn.id === id);
+                btn.classList.toggle('inactive', !isActive);
+            });
+            
+            document.querySelectorAll('.page-content').forEach(page => {
+                page.classList.toggle('active', page.id.toLowerCase().includes(currentPage));
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const primaryColorInput = document.getElementById('color_primary');
+            const secondaryColorInput = document.getElementById('color_secondary');
+
+            if(primaryColorInput && secondaryColorInput) {
+                primaryColorInput.addEventListener('input', setTheme);
+                secondaryColorInput.addEventListener('input', setTheme);
+            }
+            
+            document.querySelectorAll('.page-btn').forEach(btn => btn.addEventListener('click', () => setPage(btn.id.replace('btn-', ''))));
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', () => setLanguage(btn.id.replace('btn-', ''))));
+
+            setTheme();
+            updateUI();
+            setPage('visual');
+        });
+    </script>
+</body>
+</html>
